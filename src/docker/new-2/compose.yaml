@@ -1,0 +1,138 @@
+version: "3.9"
+
+configs:
+  fe_url:
+    file: ../config.json
+
+networks:
+  internal: {}
+
+services:
+  frontend:
+    ports: 
+      - target: 80
+        published: 30080
+#        host_ip: 127.0.0.1
+        protocol: tcp
+        mode: host
+    expose:
+      - 80
+    image: com.gft.bench.ms-forward.frontend.fe-weatherstation:base
+    networks:
+      - internal
+    configs:
+      - source: fe_url
+        target: /usr/share/nginx/html/assets/config.json
+        mode: 0444
+    labels:
+      CUSTOMER: com.gft.bench
+      PROJECT: com.gft.bench.ms-forward
+      MODULE: frontend
+      COMPONENT: fe-weatherstation
+      app: frontend
+      version: "1.0.0"
+
+  ms-measure:
+    ports: 
+      - target: 8080
+        published: 30081
+#        host_ip: 127.0.0.1
+        protocol: tcp
+        mode: host
+    expose:
+      - 8080
+    image: com.gft.bench.ms-forward.application.ms-measure:base
+    command: 
+      - "--version"
+      - "1.0.0"
+      - "--type"
+      - "thermometer"
+      - "--address"
+      - "01:00"
+      - "--name"
+      - "thermometer-1"
+      - "--randomsvc"
+      - "http://ms-forward:8080/random" 
+    networks:
+      - internal
+    labels:
+      CUSTOMER: com.gft.bench
+      PROJECT: com.gft.bench.ms-forward
+      MODULE: application
+      COMPONENT: ms-measure
+      app: ms-measure
+      version: "1.0.0"
+
+  ms-random-1:
+    ports: 
+      - target: 8080
+        published: 30082
+#        host_ip: 127.0.0.1
+        protocol: tcp
+        mode: host
+    expose:
+      - 8080
+    image: com.gft.bench.ms-forward.backend.ms-random:base
+    command: 
+      - "--version"
+      - "1.0.0"
+    networks:
+      - internal
+    labels:
+      CUSTOMER: com.gft.bench
+      PROJECT: com.gft.bench.ms-forward
+      MODULE: backend
+      COMPONENT: ms-random
+      app: ms-random-1
+      version: "1.0.0"
+
+  ms-random-2:
+    ports: 
+      - target: 8080
+        published: 30082
+#        host_ip: 127.0.0.1
+        protocol: tcp
+        mode: host
+    expose:
+      - 8080
+    image: com.gft.bench.ms-forward.backend.ms-random:base
+    command: 
+      - "--version"
+      - "1.0.0"
+    networks:
+      - internal
+    labels:
+      CUSTOMER: com.gft.bench
+      PROJECT: com.gft.bench.ms-forward
+      MODULE: backend
+      COMPONENT: ms-random
+      app: ms-random-2
+      version: "1.0.0"
+
+  ms-forward:
+    ports: 
+      - target: 8080
+        published: 30083
+#        host_ip: 127.0.0.1
+        protocol: tcp
+        mode: host
+    expose:
+      - 8080
+    image: com.gft.bench.ms-forward.backend.ms-forward:base
+    command: 
+      - "--version"
+      - "1.0.0"
+      - "--forward-to"
+      - "/random(.*):http://ms-random-1:8080/random$1"
+      - "--forward-to"
+      - "/random(.*):http://ms-random-2:8080/random$1"
+    networks:
+      - internal
+    labels:
+      CUSTOMER: com.gft.bench
+      PROJECT: com.gft.bench.ms-forward
+      MODULE: application
+      COMPONENT: ms-forward
+      app: ms-forward
+      version: "1.0.0"
+

@@ -1,0 +1,18 @@
+CAT ?= cat
+CP ?= cp -pv
+DOCKER ?= docker
+ECHO ?= echo
+LN ?= ln
+LS ?= ls
+MAKE ?= make
+MKDIR ?= mkdir -p
+PRINTF ?= printf
+RM ?= rm
+SED ?= sed
+
+GOBUILD=$(GOCMD) build
+GOCLEAN=$(GOCMD) clean
+GOCMD=go
+GOGET=$(GOCMD) get
+GOMOD=$(GOCMD) mod
+GOTEST=$(GOCMD) test

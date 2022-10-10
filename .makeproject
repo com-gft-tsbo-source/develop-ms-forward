@@ -1,0 +1,7 @@
+CUSTOMER ?= com.gft.bench
+PROJECT ?= $(CUSTOMER).ms-forward
+GIT_HOST ?= github.com
+
+export CUSTOMER
+export PROJECT
+export GIT_HOST

@@ -1,0 +1,6 @@
+go 1.18
+
+use ./src/ms-random
+use ./src/ms-measure
+use ./src/ms-forward
+use ./src/common
